@@ -3,10 +3,7 @@
 
 A node back-end app acting as a passthrough to the Marvel API with user management
 
-## Table of Contents (Optional)
-
-If your README is long, add a table of contents to make it easy for users to 
-find what they need.
+## Table of Contents
 
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
@@ -27,6 +24,14 @@ find what they need.
 
 ### Prerequisites
 
+#### Démarrage 
+1. Go to the project root folder
+2. Execute the following command to startup a Redis container for caching
+```bash
+./scripts/run_redis.sh -k -c -r
+```
+
+#### Configuration
 1. Open the /config/.env.dev file
 2. Retrieve your personal marve api keys from https://developer.marvel.com/
 3. Enter your Marvel private/public key and your mongodb connection string
@@ -42,7 +47,6 @@ MONGO_URL=mongodb+srv://Marvel:XXXXX@marvelcluster.XXXX.mongodb.net/?retryWrites
 
 MARVEL_PUBLIC_KEY=abcdef
 MARVEL_PRIVATE_KEY=abcdefghi
-
 ```
 
 ### Installation
