@@ -1,0 +1,249 @@
+openapi: 3.0.3
+info:
+  title: Backend API example
+  description: Backend API example API declaration
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: losikov@gmail.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+- url: /api/v1
+ 
+tags:
+
+  - name: character
+    description: Marvel character API
+  - name: user
+    description: User APIs
+ 
+paths:
+
+  /characters:
+    get:
+      description: Returns 'Goodbye \<name\>!!!' to the authenticated caller
+      tags: 
+        - character
+      operationId: getAllCharacter
+      security: 
+        - bearerAuth: []
+      parameters:
+        - name: name
+          in: query
+          description: Character Name
+          required: false
+          schema:
+            type: string
+        - name: orderBy
+          in: query
+          description: Order By field 
+          required: false
+          schema:
+            type: string
+        - name: offset
+          in: query
+          description: Offset for pagination 
+          required: false
+          schema:
+            type: number
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CharacterResponse'
+                additionalProperties: false
+                required:
+                  - userId
+                properties:
+                  userId:
+                    type: string
+                  token:
+                    type: string
+                    format: '^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+
+  /character/{id}:
+    get:
+      description: Returns 'Goodbye \<name\>!!!' to the authenticated caller
+      tags: 
+        - character
+      operationId: getCharacterById
+      parameters:
+        - name: id
+          in: path
+          description: Character ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security: 
+        - bearerAuth: []
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CharacterResponse'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+  /login:
+    post:
+      summary: Login
+      tags:
+        - user
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        200:
+          description: Success
+          headers:
+            X-Expires-After:
+              description: date in UTC when token expires
+              required: true
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required:
+                  - userId
+                properties:
+                  userId:
+                    type: string
+                  token:
+                    type: string
+                    format: '^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$'
+        404:
+          description: Invalid Login/Password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+ 
+  /user:
+    post:
+      summary: Create User
+      tags:
+        - user
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - email
+                - password
+                - name
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                name:
+                  type: string
+      responses:
+        201:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required:
+                  - userId
+                properties:
+                  userId:
+                    type: string
+        409:
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - success
+        - error
+      properties:
+        success:
+          type: boolean
+        error:
+          type: string
+          
+    CharacterResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        description:
+          type: string
+          
+  
