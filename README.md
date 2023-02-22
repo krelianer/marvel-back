@@ -24,7 +24,7 @@ A node back-end app acting as a passthrough to the Marvel API with user manageme
 
 ### Prerequisites
 
-#### Démarrage 
+#### Cache setup
 1. Go to the project root folder
 2. Execute the following command to startup a Redis container for caching
 ```bash
