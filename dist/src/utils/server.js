@@ -19,6 +19,7 @@ const morgan_1 = __importDefault(require("morgan"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const yamljs_1 = __importDefault(require("yamljs"));
 const fs_1 = __importDefault(require("fs"));
+const cors_1 = __importDefault(require("cors"));
 const all_router_1 = require("../api/controllers/all.router");
 const error_handler_1 = require("../error-handling/error-handler");
 const logger_1 = __importDefault(require("../lib/logger"));
@@ -29,6 +30,8 @@ function createServer() {
         server.listen(port, () => {
             logger_1.default.info(`[Marvel-back]: Server is running at http://localhost:${port}`);
         });
+        // CORS
+        server.use((0, cors_1.default)());
         server.use((0, morgan_1.default)("dev"));
         server.use(express_1.default.json());
         server.use(express_1.default.urlencoded({ extended: false }));

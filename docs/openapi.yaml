@@ -20,13 +20,13 @@ tags:
 paths:
   /Characters:
     get:
-      description: Retuurns a list of all the characters from Marvel
+      description: Returns a list of all the characters from Marvel
       tags:
         - character
       operationId: hello
       parameters:
         - name: name
-          required: false
+          required: true
           in: query
           description: The starting name of the characters to look for
           schema:

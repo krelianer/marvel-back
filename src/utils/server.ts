@@ -4,12 +4,15 @@ import logger from 'morgan';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 import fs from 'fs';
+import cors from 'cors';
 
 import { Express } from 'express-serve-static-core'
 
 import { allRoute } from '../api/controllers/all.router';
 import { sendErrorResponse } from '../error-handling/error-handler';
 import Logger from '../lib/logger';
+
+
 
 export async function createServer(): Promise<Express> {
     const server = express();
@@ -18,6 +21,11 @@ export async function createServer(): Promise<Express> {
     server.listen(port, () => {
         Logger.info(`[Marvel-back]: Server is running at http://localhost:${port}`);
     });
+
+
+
+    // CORS
+    server.use(cors())
 
     server.use(logger("dev"));
     server.use(express.json());
@@ -35,6 +43,7 @@ export async function createServer(): Promise<Express> {
 
     // Error handling
     server.use(sendErrorResponse);
+
 
     return server;
 }
