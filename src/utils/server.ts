@@ -12,8 +12,6 @@ import { allRoute } from '../api/controllers/all.router';
 import { sendErrorResponse } from '../error-handling/error-handler';
 import Logger from '../lib/logger';
 
-
-
 export async function createServer(): Promise<Express> {
     const server = express();
     const port = process.env.PORT;
@@ -21,8 +19,6 @@ export async function createServer(): Promise<Express> {
     server.listen(port, () => {
         Logger.info(`[Marvel-back]: Server is running at http://localhost:${port}`);
     });
-
-
 
     // CORS
     server.use(cors())
