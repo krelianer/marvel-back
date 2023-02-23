@@ -1,73 +1,40 @@
-import bodyParser from 'body-parser'
-import express from 'express'
-import { OpenApiValidator } from 'express-openapi-validator'
-import { Express } from 'express-serve-static-core'
-import morgan from 'morgan'
-import morganBody from 'morgan-body'
-import { connector } from 'swagger-routes-express'
-import YAML from 'yamljs'
+import cookieParser from 'cookie-parser';
+import express from 'express';
+import logger from 'morgan';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
+import fs from 'fs';
 
-import * as api from '@marvel/api/controllers'
-import config from '@marvel/config'
-import { expressDevLogger } from '@marvel/utils/express_dev_logger'
-import logger from '@marvel/utils/logger'
+import { Express } from 'express-serve-static-core'
+
+import { allRoute } from '../api/controllers/all.router';
+import { sendErrorResponse } from '../error-handling/error-handler';
+import Logger from '../lib/logger';
 
 export async function createServer(): Promise<Express> {
-  const server = express()
+    const server = express();
+    const port = process.env.PORT;
 
-  // Add CORS management
-  var cors = require('cors')
-  server.use(cors());
+    server.listen(port, () => {
+        Logger.info(`[Marvel-back]: Server is running at http://localhost:${port}`);
+    });
 
-  server.use(bodyParser.json())
+    server.use(logger("dev"));
+    server.use(express.json());
+    server.use(express.urlencoded({ extended: false }));
+    server.use(cookieParser());
 
-  // Login configuration
-  if (config.morganLogger) {
-    server.use(morgan(':method :url :status :response-time ms - :res[content-length]'))
-    morganBody(server)
-  }
+    // OpenAPI UI
+    const file = fs.readFileSync('./docs/openapi.yaml', 'utf8');
+    const swaggerDocument = YAML.parse(file);
+    server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+    Logger.info(`[Marvel-back]: OpenAPI documentation available at http://localhost:${port}/api-docs`);
 
-  if (config.morganBodyLogger) {
-    morganBody(server)
-  }
+    //Router
+    server.use("/api/v1", allRoute);
 
-  if (config.marvelDevLogger) {
-    console.log("Marvel logger active")
-    server.use(expressDevLogger)
-  }
+    // Error handling
+    server.use(sendErrorResponse);
 
-  // setup API validator
-  const yamlSpecFile = './config/openapi.yml'
-  const apiDefinition = YAML.load(yamlSpecFile)
-  const validatorOptions = {
-    coerceTypes: true,
-    apiSpec: yamlSpecFile,
-    validateRequests: true,
-    validateResponses: true
-  }
-  await new OpenApiValidator(validatorOptions).install(server)
-
-  // error customization, if request is invalid
-  server.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-    res.status(err.status).json({
-      error: {
-        type: 'request_validation',
-        message: err.message,
-        errors: err.errors
-      }
-    })
-  })
-
-  const connect = connector(api, apiDefinition, {
-    onCreateRoute: (method: string, descriptor: any[]) => {
-      descriptor.shift()
-      logger.verbose(`${method}: ${descriptor.map((d: any) => d.name).join(', ')}`)
-    },
-    security: {
-      bearerAuth: api.auth
-    }
-  })
-  connect(server)
-
-  return server
+    return server;
 }

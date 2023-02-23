@@ -1,88 +1,27 @@
+# Express OpenAPI
 
-# Marvel - Back
+Code for the article: <https://www.freecodecamp.org/news/how-to-build-explicit-apis-with-openapi/>
 
-A node back-end app acting as a passthrough to the Marvel API with user management
+This codebase shows how to build an [OpenAPI](https://www.openapis.org/)-backed [express](https://expressjs.com/) application.
 
-## Table of Contents
+## How to run
 
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Roadmap](#roadmap)
-- [Credits](#credits)
-- [License](#license)
-- [Contact](#contact)
-
-### Built With
-
-* [![NPM][NPM]][NPM-url]
-* [![Node][Node.js]][Node-url]
-* [![Jest][Jest]][Jest-url]
-* [![Express][Express]][Express-url]
-
-
-## Getting Started
-
-### Prerequisites
-
-#### Cache setup
-1. Go to the project root folder
-2. Execute the following command to startup a Redis container for caching
 ```bash
-./scripts/run_redis.sh -k -c -r
+# Install dependencies
+npm i
+
+# Run app
+npm run start
 ```
 
-#### Configuration
-1. Open the /config/.env.dev file
-2. Retrieve your personal marve api keys from https://developer.marvel.com/
-3. Enter your Marvel private/public key and your mongodb connection string
-```bash
-MONGO_URL=
+## Dynamic API documentation
 
-MARVEL_PUBLIC_KEY=
-MARVEL_PRIVATE_KEY=
-```
-Example config
-```bash
-MONGO_URL=mongodb+srv://Marvel:XXXXX@marvelcluster.XXXX.mongodb.net/?retryWrites=true&w=majority
+Thanks to its OpenAPI compliance, the app auto-generates the documenation of the API on the fly.
 
-MARVEL_PUBLIC_KEY=abcdef
-MARVEL_PRIVATE_KEY=abcdefghi
-```
+Available in <http://localhost:3030/api-documentation>, while the app is running.
 
-### Installation
-Installation :
-```bash
-npm install
-```
-
-Start server :
-```bash
-npm run dev
-```
-
-## Roadmap
-
-- [ ] Building the app in a Docker container
-- [ ] Splitting the character controller into a service
-- [ ] Create unit test for the character controller and service
-- [ ] Cleaning up the loggin configuration
-- [ ] Setup external caching to prevent unecessary calls to marvel API
+![doc-image](./doc-image.png)
 
 ## License
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
-
-## Contact
-
-Maxime Dauvergne - dauvergne.maxime@gmail.com
-
-Project Link: [https://github.com/krelianer/marvel-back](https://github.com/krelianer/marvel-back)
-
-[Node.js]: https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white
-[Node-url]: https://reactjs.org/
-[Express]: https://img.shields.io/badge/Express.js-404D59?style=for-the-badge
-[Express-url]: https://expressjs.com/
-[Jest]: https://img.shields.io/badge/Jest-323330?style=for-the-badge&logo=Jest&logoColor=white
-[Jest-url]: https://jestjs.io/fr/
-[NPM]: https://img.shields.io/badge/NPM-%23CB3837.svg?style=for-the-badge&logo=npm&logoColor=white
-[NPM-url]: https://www.npmjs.com/
+MIT © [Alain Perkaz](https://aperkaz.github.io)

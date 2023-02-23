@@ -1,0 +1,62 @@
+openapi: 3.0.3
+info:
+  title: Backend API example
+  description: Backend API example API declaration
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: losikov@gmail.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: /api/v1
+tags:
+  - name: character
+    description: All character API
+paths:
+  /Characters:
+    get:
+      description: Retuurns a list of all the characters from Marvel
+      tags:
+        - character
+      operationId: hello
+      parameters:
+        - name: name
+          required: false
+          in: query
+          description: The starting name of the characters to look for
+          schema:
+            type: string
+        - name: orderBy
+          required: false
+          in: query
+          description: The order by field. Ex -name for name desc and name for name asc
+          schema:
+            type: string
+        - name: offset
+          required: false
+          in: query
+          description: The offset of the characters to get used for pagination purposes
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CharacterResponse'
+
+components:
+  schemas:
+    CharacterResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        id:
+          type: number
